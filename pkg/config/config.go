@@ -28,17 +28,18 @@ import (
 )
 
 const (
-	flagEnableLeaderElection = "enable-leader-election"
-	flagMetricAddr           = "metrics-addr"
-	flagEnableDevLogging     = "enable-development-logging"
-	flagAWSRegion            = "aws-region"
-	flagAWSEndpointURL       = "aws-endpoint-url"
-	flagLogLevel             = "log-level"
-	flagResourceTags         = "resource-tags"
-	flagWatchNamespace       = "watch-namespace"
-	flagEnableWebhookServer  = "enable-webhook-server"
-	flagWebhookServerAddr    = "webhook-server-addr"
-	envVarAWSRegion          = "AWS_REGION"
+	flagEnableLeaderElection  = "enable-leader-election"
+	flagMetricAddr            = "metrics-addr"
+	flagEnableDevLogging      = "enable-development-logging"
+	flagUseClientWithoutCache = "use-client-without-cache"
+	flagAWSRegion             = "aws-region"
+	flagAWSEndpointURL        = "aws-endpoint-url"
+	flagLogLevel              = "log-level"
+	flagResourceTags          = "resource-tags"
+	flagWatchNamespace        = "watch-namespace"
+	flagEnableWebhookServer   = "enable-webhook-server"
+	flagWebhookServerAddr     = "webhook-server-addr"
+	envVarAWSRegion           = "AWS_REGION"
 )
 
 // Config contains configuration otpions for ACK service controllers
@@ -46,6 +47,7 @@ type Config struct {
 	MetricsAddr              string
 	EnableLeaderElection     bool
 	EnableDevelopmentLogging bool
+	UseClientWithoutCache    bool
 	AccountID                string
 	Region                   string
 	EndpointURL              string
@@ -84,6 +86,11 @@ func (cfg *Config) BindFlags() {
 		false,
 		"Configures the logger to use a Zap development config (encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn, no sampling), "+
 			"otherwise a Zap production config will be used (encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error), sampling).",
+	)
+	flag.BoolVar(
+		&cfg.UseClientWithoutCache, flagUseClientWithoutCache,
+		false,
+		"Configure the reconciler to use a non-caching client that will make requests to the API server.",
 	)
 	flag.StringVar(
 		&cfg.Region, flagAWSRegion,

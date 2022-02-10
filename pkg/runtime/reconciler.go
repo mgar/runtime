@@ -80,6 +80,11 @@ func (r *resourceReconciler) BindControllerManager(mgr ctrlrt.Manager) error {
 	}
 	r.kc = mgr.GetClient()
 	r.apiReader = mgr.GetAPIReader()
+
+	if r.cfg.UseClientWithoutCache {
+		r.kc = NewClientWithoutCache(r.kc, r.apiReader)
+	}
+
 	rd := r.rmf.ResourceDescriptor()
 	return ctrlrt.NewControllerManagedBy(
 		mgr,
